@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<meta charset="UTF-8">
+<title>HTML Layouts</title>
+<style>
+header {
+	background-color: lightgrey;
+	height: 100px;
+}
+
+nav {
+	background-color: #339999;
+	color: white;
+	width: 200px;
+	height: 300px;
+	float: left;
+}
+
+section {
+	width: 200px;
+	text-align: left;
+	float: left;
+	padding: 10px;
+}
+
+footer {
+	background-color: #FFCC00;
+	height: 100px;
+	clear: both;
+}
+
+header, nav, section, footer {
+	text-align: center;
+}
+
+header, footer {
+	line-height: 100px;
+}
+
+nav, section {
+	line-height: 240px;
+}
+
+textarea {
+	width: 250px;
+	height: 250px;
+}
+</style>
+</head>
+
+<body>
+
+
+	<h1>HTML5 레이아웃</h1>
+	<header>
+		<h2>HEADER 영역</h2>
+	</header>
+	<nav>
+		<!-- buttons -->
+		<div class="col col-xs-3">
+
+			<button id="id-xml-to-json" type="button"
+				class="btn btn-info btn-block">xml to json</button>
+			<br />
+
+			<button id="id-json-to-xml" type="button"
+				class="btn btn-warning btn-block">json to xml</button>
+			<br />
+
+		</div>
+	</nav>
+	<section>
+
+		<div id="xml-to-json" style="display: none;">
+			<table>
+			<tr><td>
+				<textarea id="input-xml"></textarea>
+				</td>
+				<td>
+				<textarea id="output-xml-to-json"></textarea></td>
+				<td><button type="button" id="convert-xml-to-json">xml => json</button>
+			</td></tr>
+			</table>
+		</div>
+
+		<div id="json-to-xml" style="display: none;">
+			<textarea id="input-json"></textarea>
+			<button type="button" id="convert-json-to-xml">json => xml</button>
+			<textarea id="output-json-to-xml"></textarea>
+		</div>
+
+	</section>
+	<footer>
+		<h2>FOOTER 영역</h2>
+	</footer>
+
+</body>
+<script>
+	$("#id-xml-to-json").on("click", function() {
+		$("#output-xml-to-json").empty();
+		$("#xml-to-json").show();
+		$("#json-to-xml").hide();
+	});
+
+	$("#id-json-to-xml").on("click", function() {
+		$("#xml-to-json").hide();
+		$("#output-json-to-xml").empty();
+		$("#json-to-xml").show();
+	});
+</script>
+
+
+</html>

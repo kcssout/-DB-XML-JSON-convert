@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<!--  chart.css -->
+<link rel="stylesheet"
+	href="https://cdn.rawgit.com/theus/chart.css/v1.0.0/dist/chart.css" />
+
+
+
+<meta charset="UTF-8">
+<title>XML <=> JSON CONVERTER</title>
+<style>
+
+/* UI Object */
+body {
+	_text-align: center
+}
+
+#wrap {
+	width: 1300px;
+	margin: 0 auto;
+	_text-align: left;
+}
+
+#header {
+	width: 100%
+}
+
+#container {
+	display: inline-block;
+	width: 100%;
+}
+
+#container:after {
+	display: block;
+	clear: both;
+	content: ''
+}
+
+#content {
+	float: left;
+	width: 1300px
+}
+
+.aside {
+	float: right;
+	width: 550px;
+	height: 700px
+}
+
+#center {
+	position: absolute;
+	left: 42%;
+	top: 42%;
+	width: 150px;
+	float: left;
+	margin: 0 auto;
+	vertical-align: middle;
+}
+
+#footer {
+	width: 100%
+}
+
+/* Layout Color - 실제 서비스 적용 후 아래 코드는 삭제 하세요 */
+div {
+	margin: 0 0 10px;
+	padding: 10px 0;
+	color: #2d2c2d;
+	font-family: Tahoma;
+	font-size: 14px;
+	font-weight: bold
+}
+
+#wrap {
+	_width /**/: 620px;
+	padding: 10px;
+	border: 1px solid #bdbdbd;
+	background: #f7f7f7
+}
+
+#header {
+	margin-top: 10px
+}
+
+#contain_top {
+	margin: 2px;
+	padding-left: 50px;
+	text-align: left;
+}
+
+#contain_right {
+	float: right;
+}
+
+#contain_right2 {
+	float: right;
+}
+
+#sample {
+	float: right;
+}
+
+#header, #container {
+	position: relative;
+	padding: 15px;
+	*padding: 10px;
+	border: 2px solid #bfbfbf;
+	background: #e5e5e5;
+	text-align: left;
+}
+
+#header, #container {
+	width: 100%;
+}
+
+.aside, #content {
+	position: relative;
+	margin-top: 5px;
+	border: 0px solid #bdbdbd;
+	text-align: left;
+	border: 0px solid #bdbdbd;
+}
+
+#content {
+	width: 540px;
+	height: 700px;
+}
+
+#footer {
+	width: 100%;
+	padding: 10px;
+	border: 2px solid #bfbfbf;
+	background: #e5e5e5
+}
+
+button.img_button, button.img_button2 {
+	background: url(/ss.png) no-repeat;
+	border: none;
+	width: 36px;
+	height: 34px;
+	cursor: pointer;
+}
+
+.classname {
+	resize: none
+}
+
+.input_name {
+	padding-left: 40px;
+}
+
+.output_name {
+	padding-left: 50px;
+}
+
+textarea {
+	width: 450px;
+	height: 500px;
+}
+/* //UI Object */
+</style>
+<body>
+	<BR>
+	<!--ui object -->
+	<div id="wrap">
+		<center>
+			<font size=5>XML - JSON CONVERTER</font>
+		</center>
+		<!--header -->
+		<div id="header">
+		<center>
+			<button id="id-xml-to-json" type="button" class="btn btn-info"
+				style="width: 250px;height:45px;">
+				<b>XML TO JSON</b>
+			</button>
+			<button id="id-json-to-xml" type="button" class="btn btn-default"
+				style="width: 250px;height:45px;">
+				<b>JSON TO XML</b>
+			</button>
+			<button id="sum_chart" type="button" class="btn btn-default"
+				style="width: 250px;height:45px;">
+				<b>전체 상태 조회</b>
+			</button>
+		</center>
+		</div>
+		<!--//header -->
+		<!--container -->
+
+		<div id="container" style="height: 700px;">
+		
+			<div id="contain_top">
+				<font size=5 class="contain_name">XML TO JSON</font>
+				<div id="contain_right">
+					<button type="button" class="img_button"
+						onclick="layerControl(event, 1);"></button>
+				</div>
+
+				<div id="contain_right2" style="display: none;">
+					<button type="button" class="img_button2"
+						onclick="layerControl(event, 2);"></button>
+				</div>
+			</div>
+
+
+
+			<!--content -->
+			<div id="content">
+				<h2 class="input_name" style="width: 90%;">
+					▶INPUT XML
+					<button type="button" id="x-sample" class="btn btn-info"
+						style="float: right;">
+						<B>SAMPLE</B>
+					</button>
+				</h2>
+				<div id="xml-to-json" style="">
+					<center>
+						<textarea id="input-xml" class="classname"></textarea>
+					</center>
+				</div>
+				<div id="json-to-xml" style="display: none;">
+					<center>
+						<textarea id="input-json" class="classname"></textarea>
+					</center>
+				</div>
+			</div>
+
+			<div id="center">
+				<center>
+					<div id="con-xml-to-json" style="">
+						<button type="button" id="convert-xml-to-json"
+							class="btn btn-info">
+							<b>▶ CONVERT ▶</b>
+						</button>
+					</div>
+
+					<div id="con-json-to-xml" style="display: none;">
+						<button type="button" id="convert-json-to-xml"
+							class="btn btn-danger">
+							<b>▶ CONVERT ▶</b>
+						</button>
+					</div>
+
+				</center>
+			</div>
+			<!--//content -->
+
+
+			<!--aside -->
+
+			<div class="aside">
+				<h2 class="output_name">▶OUTPUT JSON</h2>
+
+				<div id="out_xml-to-json" style="">
+					<center>
+						<textarea id="output-xml-to-json" class="classname"></textarea>
+					</center>
+
+				</div>
+				<div id="out_json-to-xml" style="display: none;">
+					<center>
+						<textarea id="output-json-to-xml" class="classname"></textarea>
+					</center>
+				</div>
+
+			</div>
+			<span style="margin: 10px;padding-left: 50px;text-align: left;">
+			<b><font size="5" class="chart_text" style="display:none;">전체 상태 조회</font></b></span><br>
+			<div id="chart_div" style="height:600px;display:none;" ></div>
+			
+			
+			<!--//aside -->
+		</div>
+		<!--//container -->
+		<!--footer -->
+		<div id="footer">
+			<font size=5> Statistics</font>
+			<div id="show_st" style="display: block;">
+				<table width="98%" height="150px" border=0 align=center>
+					<tr height="90px">
+						<td style="vertical-align: top;">
+
+							<button type="button" id="statics" class="btn btn-info">상태
+								조회 펴기▼</button>
+
+							<div class="charts" style="display: none;">
+								<span><font size="5" class="tot_xj"></font></span><br>
+								<span><font size="5" class="scnt_xj">성공</font></span>
+								<div id="xtoj_ss"
+									class="charts__chart chart--blue hart--hover chart--xl"
+									data-percent="0%" style="width:0%;"></div>
+								<br>
+								<!-- /.charts__chart -->
+								<span><font size="5" class="ecnt_xj">실패</font></span>
+								<div id="xtoj_ee"
+									class="charts__chart chart--red hart--hover chart--xl"
+									data-percent="0%" style="width:0%;"></div>
+								<!-- /.charts__chart -->
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- 2번째 차트 -->
+			<div id="show2_st" style="display: none;">
+				<table width="98%" height="150px" border=0 align=center>
+					<tr height="90px">
+						<td style="vertical-align: top;">
+
+							<button type="button" id="statics2" class="btn btn-danger">상태
+								조회 펴기▼</button>
+
+							<div class="charts2" style="display: none;">
+								<span><font size="5" class="tot_jx"></font></span><br>
+								<span><font size="5" class="scnt_jx"></font></span>
+								<div id="jtox_ss"
+									class="charts__chart chart--blue hart--hover chart--xl"
+									data-percent="100%" style="width: 90%;"></div>
+								<br> <span><font size="5" class="ecnt_jx"></font></span>
+								<div id="jtox_ee"
+									class="charts__chart chart--red hart--hover chart--xl"
+									data-percent="100%" style="width: 90%;"></div>
+							</div>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+		<!--//footer -->
+		License<BR> StAXON is available under the Apache License, Version
+		2.0.<BR> (c) 2011, 2012 Odysseus Software
+	</div>
+	<!--//ui object -->
+
+	<div id="Layer1" style="position: absolute; display: none;">
+		<table border="0" cellspacing="2" cellpadding="0" width="200">
+			<tr>
+				<td><button type="button" id="rest_x_to_j_input"
+						class="btn btn-success" style="width: 190px; border-radius: 0px;">INPUT
+						XML 초기화</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" id="reset_x_to_j_output"
+						class="btn btn-success" style="width: 190px; border-radius: 0px;">OUTPUT
+						JSON 초기화</button></td>
+			</tr>
+			<!-- 
+			
+			<tr>
+				<td><button type="button" id="resetbtn" class="btn btn-success"
+						style="border-radius: 0px;">XML TO JSON 상태 초기화</button></td>
+			</tr>
+			 -->
+
+
+
+		</table>
+	</div>
+
+	<div id="Layer2" style="position: absolute; display: none;">
+		<table border="0" cellspacing="1" cellpadding="0" width="200">
+			<tr>
+				<td><button type="button" id="reset_j_to_x_input"
+						class="btn btn-success" style="width: 190px; border-radius: 0px;">INPUT
+						JSON 초기화</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" id="reset_j_to_x_output"
+						class="btn btn-success" style="width: 190px; border-radius: 0px;">OUTPUT
+						XML 초기화</button></td>
+			</tr>
+<!-- 
+			<tr>
+				<td><button type="button" id="resetbtn2"
+						class="btn btn-success" style="border-radius: 0px;">JSON
+						TO XML 상태 초기화</button></td>
+			</tr>
+
+
+
+ -->
+
+
+		</table>
+	</div>
+
+</body>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+	var url = "http://localhost:8080/";
+
+	var s_cnt;// xml => json
+	var e_cnt;
+	//var j_to_x_scnt = Number(localStorage.getItem('j_to_x_scnt'));// json=> xml
+	//var j_to_x_ecnt = Number(localStorage.getItem('j_to_x_ecnt'));
+	var j_to_x_scnt, j_to_x_ecnt;
+	
+	var total, spercent, ss, epercent, ee;
+	var total2, spercent2, ss2, epercent2, ee2;
+
+	function getDB() {//db 가져오기
+		$.getJSON(url + "dbinfo", function(data) {
+			s_cnt = data["x2j"]["well"];
+			e_cnt = data["x2j"]["fail"];
+			success_xtoj_p();
+			
+			j_to_x_scnt = data["j2x"]["well"];
+			j_to_x_ecnt = data["j2x"]["fail"];
+			success_jtox_p();
+			drawStacked();
+		});
+	}
+
+	//절대 좌표 구하기(화면 스크롤 반영)
+	function getAbsPos(e) {
+		this.x = e.clientX
+				+ (document.documentElement.scrollLeft ? document.documentElement.scrollLeft
+						: document.body.scrollLeft);
+		this.y = e.clientY
+				+ (document.documentElement.scrollTop ? document.documentElement.scrollTop
+						: document.body.scrollTop);
+		return this;
+	}
+	var objbtn;//버튼 생성되는 obj값 저장할 변수
+
+	//document를 클릭했을시 (설정버튼이외 페이지 눌렀을시 버튼 자동닫기)
+	window.onload = function() {
+
+		document.body.onclick = function(e) {
+			var eventObj = document.getElementById('Layer1');
+			var eventObj2 = document.getElementById('Layer2');
+			var position = getAbsPos(event);
+
+			var x = position.x;
+			var y = position.y;
+
+			// 버튼의 현재 위치
+			//alert("left: " + obj.left + "px, top: " + obj.top + "px");
+			if (!(x >= objbtn.left && x <= objbtn.left + 35)
+					&& !(y >= objbtn.top && x <= objbtn.top + 33)) {
+
+				eventObj.style.display = 'none';
+				eventObj2.style.display = 'none';
+			}
+
+		};
+	};
+
+	//마우스 레이어 제어(show, hide)
+	function layerControl(event, index) {
+		var eventObj = document.getElementById('Layer' + index);
+		if (!event)
+			event = window.Event;
+		var position = getAbsPos(event);
+		//alert('left: '+ position.x + 'top: '+position.y);
+
+		if (index == 1) {
+			objbtn = $(".img_button").offset();// 버튼이 현재 그려지는 위치
+		}
+		if (index == 2) {
+			objbtn = $(".img_button2").offset();
+		}
+		//alert("left: " + objbtn.left + "px, top: " + objbtn.top + "px");
+		eventObj.style.left = objbtn.left - 40 + "px"; //레이어팝업이 그려지는위치
+		eventObj.style.top = objbtn.top + 30 + "px";
+
+		eventObj.style.display = eventObj.style.display == 'none' ? '' : 'none';
+	}
+	
+
+	
+
+	function drawStacked() {
+	      var data = google.visualization.arrayToDataTable([
+	        ['City', 'Success', {type: 'string', role: 'annotation'}, 'Fail', {type: 'string', role: 'annotation'}],
+	        ['XML to JSON, 총 '+total+'건', s_cnt,s_cnt+'건', e_cnt, e_cnt+'건'],
+	        ['JSON to XML, 총 '+j_to_x_total+'건', j_to_x_scnt, j_to_x_scnt+'건', j_to_x_ecnt, j_to_x_ecnt+'건']
+
+	      ]);
+	      var options = {
+	    		  annotations: {
+	    			  alwaysOutside:false,
+	    			    textStyle: {
+	    			      fontSize: 15,
+	    			      bold: true
+	    			    }
+	    			  },
+	        title: 'XML - JSON CONVERTER CHART',
+	        titleTextStyle: {
+	        	  fontSize: 20,
+	              bold : true
+	            },
+	        chartArea: {width: '60%'},
+	        isStacked: true,
+	        hAxis: {
+	          title: 'Total Statistics',
+	          textStyle: {
+	        	  fontSize: 20,
+	              bold : true
+	            },
+	          minValue: 0,
+	        },
+	        vAxis: {
+	          title: '',
+	          textStyle: {
+			      fontSize: 20,
+			      bold: true
+			    }
+	        }
+	        
+	      };
+	     
+	   	var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+	    	  chart.draw(data, options);
+	      
+	     
+	}
+	
+	
+	var check = 1;//현재 버튼 동작 체크
+	//var test = $('#container').html();
+	var container = document.getElementById('chart_div');
+	$("#id-xml-to-json").click(function() {
+		check=1;
+		
+		$("#id-json-to-xml").removeClass().addClass("btn btn-default");
+		$("#sum_chart").removeClass().addClass("btn btn-default");
+		$("#id-xml-to-json").addClass("btn btn-info");
+		if(check ==1){
+				//$('#container').html(test);
+				displayb();
+		}
+	});
+	function displayb(){
+		$("#footer").show();
+		$("#contain_top").css("display", "");
+		$("#content").css("display", "");
+		$("#center").css("display", "");
+		$(".aside").css("display", "");
+		container.style.display='none';
+		$(".chart_text").css("display", "none");
+	}
+	$("#id-json-to-xml").click(function() {
+		check=2;		
+		$("#sum_chart").removeClass().addClass("btn btn-default");
+		$("#id-xml-to-json").removeClass().addClass("btn btn-default");
+		
+		if(check==2){
+			$("#id-json-to-xml").addClass("btn btn-danger");
+			displayb();
+		}
+	});
+	$("#sum_chart").click(function() {
+		check=3;
+		getDB();
+		$("#id-json-to-xml").removeClass().addClass("btn btn-default");
+		$("#id-xml-to-json").removeClass().addClass("btn btn-default");		
+		$("#sum_chart").addClass("btn btn-success");
+		container.style.display='block';
+		google.charts.load('current', {packages: ['corechart', 'bar']});
+		google.charts.setOnLoadCallback(drawStacked);
+		
+		if(check==3){
+			$("#footer").css("display", "none");
+			
+			$("#contain_top").css("display", "none");
+			$("#content").css("display", "none");
+			$("#center").css("display", "none");
+			$(".aside").css("display", "none");
+			//$(".chart_text").html("");
+			$(".chart_text").css("display", "");
+			
+
+		}
+	});
+	
+	$("#x-sample")
+			.click(
+					function() {
+						var xml_sample = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bookstore>\n\t<book category=\"cooking\">\n"
+								+ "\t\t<title lang=\"en\">Everyday Italian</title>\n\t\t<author>Giada De Laurentiis</author>"
+								+ "\n\t\t<year>2005</year>\n\t\t<price>30.00</price>\n\t</book>\n</bookstore>";
+
+						$("#input-xml").val(xml_sample);
+
+					});
+	//동적 샘플버튼 생성시 샘플값
+	$(document)
+			.on(
+					"click",
+					"#x-sample",
+					function() {
+						var xml_sample = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bookstore>\n\t<book category=\"cooking\">\n"
+								+ "\t\t<title lang=\"en\">Everyday Italian</title>\n\t\t<author>Giada De Laurentiis</author>"
+								+ "\n\t\t<year>2005</year>\n\t\t<price>30.00</price>\n\t</book>\n</bookstore>";
+
+						$("#input-xml").val(xml_sample);
+					});
+	$(document)
+			.on(
+					"click",
+					"#j-sample",
+					function() {
+
+						var xx = "{\n    \"bookstore\": {\n\t\"book\": {\n\t  \"@category\": \"cooking\","
+								+ "\n\t \"title\": {\n"
+								+ "\t\t \"@lang\": \"en\","
+								+ "\n\t\t \"$\": \"Everyday Italian\""
+								+ "\n\t },"
+								+ "\n\t \"author\": \"Giada De Laurentiis\","
+								+ "\n\t \"year\": 2005,"
+								+ "\n\t \"price\": 30"
+								+ "\n\t}" + "\n    }" + "\n}";
+
+						$("#input-json").val(xx);
+
+					});
+
+
+	
+	//XML TO JSON 막대그래프 값 변경
+	function success_xtoj_p() {
+	
+		total = s_cnt + e_cnt;
+		spercent = s_cnt / total * 100;
+		ss = spercent.toFixed(2) + "%";//소수점 2자리수 이하 반올림
+
+		if (ss == 'NaN%') {
+			ss = "0%";
+			$("#xtoj_ss").hide();
+		} else {
+			$("#xtoj_ss").show();
+		}
+		epercent = e_cnt / total * 100;
+		ee = epercent.toFixed(2) + "%";
+		if (ee == 'NaN%') {
+			ee = "0%";
+			$("#xtoj_ee").hide();
+		} else {
+			$("#xtoj_ee").show();
+		}
+		
+		$(".tot_xj").text("전체 : " + total + "건 (XML to JSON)");
+		$(".scnt_xj").text("성공 : " + s_cnt + "건");
+		$(".ecnt_xj").text("실패 : " + e_cnt + "건");//건수 반영
+		cshow();
+	}
+	function cshow(){
+		$("#xtoj_ss").css('width', ss);
+		$("#xtoj_ss").attr('data-percent', ss);
+		$("#xtoj_ee").css('width', ee);
+		$("#xtoj_ee").attr('data-percent', ee);
+	}
+	$("#resetbtn").click(function() {
+		localStorage.setItem('s_cnt', 0);
+		localStorage.setItem('e_cnt', 0);
+		s_cnt = 0;
+		e_cnt = 0;
+
+		success_xtoj_p();
+
+		$("#xtoj_ss").css('width', "0%");
+		$("#xtoj_ss").attr('data-percent', "0%");
+
+		$("#xtoj_ee").css('width', "0%");
+		$("#xtoj_ee").attr('data-percent', "0%");
+
+	});
+	$("#statics").click(function() {
+
+		if ($(".charts").css("display") == "none") {
+			getDB();
+
+			$(".charts").show();
+			$("#statics").text("상태 조회 접기▲");
+		} else {
+			$("#statics").text("상태 조회 펴기▼");
+
+			$(".charts").css("display", "none");
+		}
+
+	});
+
+	$("#rest_x_to_j_input").click(function() {
+		$("#input-xml").val('');
+	});
+	$("#reset_x_to_j_output").click(function() {
+		$("#output-xml-to-json").val('');
+	});
+
+	$("#reset_j_to_x_input").click(function() {
+		$("#input-json").val('');
+	});
+	$("#reset_j_to_x_output").click(function() {
+		$("#output-json-to-xml").val('');
+	});
+
+	//JSON TO XML 막대그래프 값 변경----------------------------------------------------------------
+
+	function success_jtox_p() {
+
+		j_to_x_total = j_to_x_scnt + j_to_x_ecnt;
+		spercent2 = j_to_x_scnt / j_to_x_total * 100;
+		ss2 = spercent2.toFixed(2) + "%";//소수점 2자리수 이하 반올림
+		if (ss2 == 'NaN%') {
+			ss2 = "0%";
+			$("#jtox_ss").hide();
+		} else {
+			$("#jtox_ss").show();
+		}
+		epercent2 = j_to_x_ecnt / j_to_x_total * 100;
+		ee2 = epercent2.toFixed(2) + "%";
+		if (ee2 == 'NaN%') {
+			ee2 = "0%";
+			$("#jtox_ee").hide();
+		} else {
+			$("#jtox_ee").show();
+		}
+		$(".tot_jx").text("전체 : " + j_to_x_total + "건 (JSON to XML)");
+		$(".scnt_jx").text("성공 : " + j_to_x_scnt + "건");
+		$(".ecnt_jx").text("실패 : " + j_to_x_ecnt + "건");
+
+		$("#jtox_ss").css('width', ss2);
+		$("#jtox_ss").attr('data-percent', ss2);
+
+		$("#jtox_ee").css('width', ee2);
+		$("#jtox_ee").attr('data-percent', ee2);
+	}
+	$("#resetbtn2").click(function() {
+		localStorage.setItem('j_to_x_scnt', 0);
+		localStorage.setItem('j_to_x_ecnt', 0);
+		j_to_x_scnt = 0;
+		j_to_x_ecnt = 0;
+		success_jtox_p();
+		$("#jtox_ss").css('width', "0%");
+		$("#jtox_ss").attr('data-percent', "0%");
+
+		$("#jtox_ee").css('width', "0%");
+		$("#jtox_ee").attr('data-percent', "0%");
+
+	});
+	$("#statics2").click(function() {
+
+		if ($(".charts2").css("display") == "none") {
+			//success_jtox_p();
+			getDB();
+			$(".charts2").show();
+			$("#statics2").text("상태 조회 접기▲");
+		} else {
+			$(".charts2").css("display", "none");
+			$("#statics2").text("상태 조회 펴기▼");
+		}
+
+	});
+
+	//Converter 버튼--------------------------
+	$("#id-xml-to-json")
+			.on(
+					"click",
+					function() {
+
+						$("#output-xml-to-json").empty();
+
+						$("#xml-to-json").show();
+						$("#con-xml-to-json").show();
+						$("#out_xml-to-json").show();
+
+						$('#json-to-xml').hide();
+						$("#con-json-to-xml").hide();
+						$("#out_json-to-xml").hide();
+
+						$("#x_to_j_count").show();
+						//$(".h2 > #x-sample").show();//sample 버튼
+						$("#show_st").show();//x_to_j통계
+						$("#show2_st").hide();//j_to_x통계
+
+						$("#contain_right").css("display", "");//설정버튼	
+						$("#contain_right2").css("display", "none");//설정버튼	
+						$("#Layer2").css("display", "none");
+
+						$(".contain_name").text('XML TO JSON');
+						$('.input_name')
+								.html(
+										'▶INPUT XML <button type="button" id="x-sample" class="btn btn-info" style="float:right;"><B>SAMPLE</B></button>');
+						$(".output_name").text('▶OUTPUT JSON');
+					});
+	//Converter2
+
+	$('#id-json-to-xml')
+			.on(
+					'click',
+					function() {
+						oper = false;
+						$('#output-json-to-xml').empty();
+
+						$('#json-to-xml').show();
+						$('#con-json-to-xml').show();
+						$('#out_json-to-xml').show();
+
+						$('#xml-to-json').hide();
+						$("#con-xml-to-json").hide();
+						$('#out_xml-to-json').hide();
+
+						$("#show2_st").css("display", "block");//j_to_x통계
+						$("#show_st").hide();//x_to_j통계 숨김
+						$("#contain_right2").css("display", "");//설정버튼	
+
+						$("#Layer1").css("display", "none");
+						$("#contain_right").css("display", "none");
+
+						$('.contain_name').text('JSON TO XML');
+						$('.input_name')
+								.html(
+										'▶INPUT JSON <button type="button" id="j-sample" class="btn btn-danger" style="float:right;"><B>SAMPLE</B></button>');
+						$('.output_name').text('▶OUTPUT XML');
+
+					});
+
+	var xml2json = function(_data) {
+		
+		$.ajax({
+			type : "POST",
+			url : url + "xml2json",
+			data : _data,
+			contentType : "application/xml",
+			cache : false,
+			success : function(data) {
+				//s_cnt++;
+				//localStorage.setItem('s_cnt', s_cnt);
+
+				$.ajax({
+					type : "GET",
+					url : url + "save",
+					data : {
+						x2j : "well"
+					},
+					contentType : "text",
+					success : function(data) {
+						getDB();
+					}
+
+				});
+				
+				//success_xtoj_p();
+				var tempjson = JSON.stringify(data, null).substring(8,
+						JSON.stringify(data, null).length - 1);
+				var aaa = JSON.parse(tempjson);
+				
+				$("#output-xml-to-json").val(JSON.stringify(aaa, null, 4)).css(
+						"color", "blue");
+				
+			},
+			error : function() {
+				//e_cnt++;
+				//localStorage.setItem('e_cnt', e_cnt);
+
+				$.ajax({
+					type : "GET",
+					url : url + "save",
+					data : {
+						x2j : "fail"
+					},
+					contentType : "text",
+					success : function(data) {
+						getDB();
+					}
+
+				});
+				
+				//success_xtoj_p();
+				$("#output-xml-to-json").val("XML 형식에 맞지 않습니다.").css("color",
+						"red");
+				
+			}
+			
+		});
+	}
+
+	var json2xml = function(_data) {
+		//var xmlform = "<? xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+		$.ajax({
+			type : "POST",
+			url : url + "json2xml",
+			data : _data,
+			contentType : "application/json",
+			cache : false,
+			success : function(data) {
+				//j_to_x_scnt++;
+				//localStorage.setItem('j_to_x_scnt', j_to_x_scnt);
+				$.ajax({
+					type : "GET",
+					url : url + "save",
+					data : {
+						j2x : "well"
+					},
+					contentType : "text",
+					success : function(data) {
+						getDB();
+					}
+
+				});
+				var xmlText = new XMLSerializer().serializeToString(data);
+
+				var xmlPrint = xmlText.substring(6, xmlText
+						.lastIndexOf("</root>"));
+				xmlPrint = "<?xml version='1.0' encoding='utf-8'?>\n"
+						+ xmlPrint;
+				//var print = xmlform + xmlText
+				//success_jtox_p();
+				$("#output-json-to-xml").val(xmlPrint).css("color", "blue");
+
+			},
+			error : function() {
+				//j_to_x_ecnt++;
+				//localStorage.setItem('j_to_x_ecnt', j_to_x_ecnt);
+
+				$.ajax({
+					type : "GET",
+					url : url + "save",
+					data : {
+						j2x : "fail"
+					},
+					contentType : "text",
+					success : function(data) {
+						getDB();
+					}
+
+				});
+				//success_jtox_p();
+				$("#output-json-to-xml").val("JSON 형식에 맞지 않습니다.").css("color",
+						"red");
+
+			}
+		});
+	}
+
+	$("#convert-xml-to-json").on("click", function() {
+		var data = $("#input-xml").val();
+
+		xml2json(data);
+	});
+
+	$("#convert-json-to-xml").on("click", function() {
+		var data = $("#input-json").val();
+
+		json2xml(data);
+	});
+
+</script>
+
+</html>
