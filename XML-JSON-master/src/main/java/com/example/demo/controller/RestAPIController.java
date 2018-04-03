@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
+import com.example.demo.converter.JsonConverter;
 import com.example.demo.converter.j_to_x;
 import com.example.demo.converter.x_to_j;
 import com.example.demo.entity.xjdb;
@@ -38,43 +39,43 @@ public class RestAPIController {
 
     @Autowired
     private DBservice dbsvc;
-	
+    private JsonConverter js;    
+    private DOMParserCheck xv;
+    
 	@RequestMapping(value = "/xml2json", method = RequestMethod.POST, consumes = "application/xml", produces = "application/json")
 	public ResponseEntity<String> xtoj(HttpServletRequest request, @RequestBody String xml) throws XmlParseException, ParserConfigurationException, SAXException, IOException {
 
 
 		String json="";
-		if(XMLcheck(xml)) {
-			
-			if(xml.contains("<?")) {// 헤더에 형식이 들어가있으며 
-				//System.out.println(xml.indexOf("<?")+1); -1반환해서
-				xml=xml.substring(xml.indexOf("?>")+2);
-				System.out.println(XMLcheck(xml)+"\n"+ xml);
-				xml = "<root>"+ xml+"</root>";
-				json = x_to_j.xml2json(xml);//변환
-				
-				System.out.println(json);
-				return new ResponseEntity<String>(json, HttpStatus.OK);
-			}else {
-				xml = "<root>"+ xml+"</root>";
-				json = x_to_j.xml2json(xml);//변환
-				return new ResponseEntity<String>(json, HttpStatus.OK);
-			}
-		}else {
-			
-			return new ResponseEntity<String>(json, HttpStatus.BAD_REQUEST);
+		System.out.println(xv.xmlvalid(xml));
+		if(xv.xmlvalid(xml)) {
+			//XMLcheck(xml)
+			json = js.convertXml(xml);
+			return new ResponseEntity<String>(json, HttpStatus.OK);
 		}
-		
-				
+//		if(XMLcheck(xml)) {
+//			if(xml.contains("<?")) {// 헤더에 형식이 들어가있으며 
+//			xml=xml.substring(xml.indexOf("?>")+2);
+//			xml = "<root>"+ xml+"</root>";
+//			json = js.convertXml(xml);
+//			return new ResponseEntity<String>(json, HttpStatus.OK);
+//		}
+//		else {
+//			xml = "<root>"+ xml+"</root>";
+//			json = js.convertXml(xml);
+//			return new ResponseEntity<String>(json, HttpStatus.OK);
+//		}
+//		}
+		else {
+			return new ResponseEntity<String>(json, HttpStatus.BAD_REQUEST);
+		}				
 	}
-
 	@RequestMapping(value = "/json2xml", method = RequestMethod.POST, consumes = "application/json", produces = "application/xml")
-	public ResponseEntity<String> jtox(HttpServletRequest request, @RequestBody String json) throws JSONException {
+	public ResponseEntity<String> jtox(HttpServletRequest request, @RequestBody String jsonx) throws JSONException {
 
 		String output="";
-		
-		//System.out.println(json.substring(0,1)+"    "+json.substring(json.length()-1));
-		System.out.println(json.substring(json.length()-1));
+		String json = jsonx.trim();		//띄워쓰기, 엔터 제거
+		System.out.println(JSONUtils.isJSONValid(json));
 		
 		if(JSONUtils.isJSONValid(json) && !(j_to_x.json2xml(json).equals("")) && LengCheck(json)) {
 			output = j_to_x.json2xml(json);
@@ -102,7 +103,7 @@ public class RestAPIController {
 		Map<String,Object> j2xdb = new HashMap<String,Object>();
 		j2xdb.put("well", dbsvc.countByJ2x("well"));
 		j2xdb.put("fail", dbsvc.countByJ2x("fail"));
-		System.out.println("왜 "+dbmap.get("x2j"));
+		
 		dbmap.put("x2j",x2jdb);
 		dbmap.put("j2x", j2xdb);
 		

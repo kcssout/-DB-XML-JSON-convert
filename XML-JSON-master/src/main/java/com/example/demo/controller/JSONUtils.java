@@ -10,10 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 public final class JSONUtils {
-
+	//private static final Gson gson = new Gson();
 
 	private JSONUtils() {
 	}
+
+	// public static boolean isJSONValid(String jsonInString ) {
+	// try {
+	// final ObjectMapper mapper = new ObjectMapper();
+	// mapper.readTree(jsonInString);
+	// return true;
+	// } catch (IOException e) {
+	// return false;
+	// }
+	// }
+
 	public static boolean isJSONValid(String test) {
 		try {
 			new JSONObject(test);
@@ -29,4 +40,12 @@ public final class JSONUtils {
 		return true;
 	}
 
+//	public static boolean isGJSONValid(String jsonInString) {
+//		try {
+//			gson.fromJson(jsonInString, Object.class);
+//			return true;
+//		} catch (com.google.gson.JsonSyntaxException ex) {
+//			return false;
+//		}
+//	}
 }
